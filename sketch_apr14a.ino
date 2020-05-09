@@ -1,6 +1,5 @@
 
 
-#include <math.h>
 
 #define __CRYPTID_BONEH_FRANKLIN_IDENTITY_BASED_ENCRYPTION
 #define __CRYPTID_EXTERN_RANDOM
@@ -9,7 +8,7 @@
 #include "BonehFranklinIdentityBasedEncryptionPublicParametersAsBinary.h"
 #include "BonehFranklinIdentityBasedEncryptionMasterSecretAsBinary.h"
 
-
+#include <math.h>
 #include "mini-gmp.h"
 #include "Validation.h"
 #include "Utils.h"
@@ -31,48 +30,52 @@ void setup() {
     Serial.begin(9600); // open the serial port at 9600 bps:
 
     const char *identity = "darth.plagueis@sith.com";
-    const char *message = "adfadjfa;jdfa;lsdjf";
+    const char *message = "adfadjfa";
 
 
+    Serial.println("\n\n\n\nStarting\n");
     BonehFranklinIdentityBasedEncryptionPublicParametersAsBinary publicParameters;
     BonehFranklinIdentityBasedEncryptionMasterSecretAsBinary masterSecret;
 
-    CryptidStatus status_ = cryptid_ibe_bonehFranklin_setup(&masterSecret, &publicParameters, LOWE);
-    if (CRYPTID_SUCCESS != status_)
+    CryptidStatus status_ = cryptid_ibe_bonehFranklin_setup(&masterSecret, &publicParameters, LOWEST);
+    if (status_)
     {
         Serial.println("\n\n\n\nSetup failed\n");
-        plaintext = "fail";
     }
+    else Serial.println("\n\n\n\nSetup success\n");
 
     
-//    AffinePointAsBinary privateKey;
-//    status = cryptid_ibe_bonehFranklin_extract(&privateKey, identity, strlen(identity), masterSecret, publicParameters);
-//    if (CRYPTID_SUCCESS != status)
-//    {
-//        Serial.println("Extract failed\n");
-//        plaintext = "fail";
-//    }
-//
-//    BonehFranklinIdentityBasedEncryptionCiphertextAsBinary ciphertext;
-//    status = cryptid_ibe_bonehFranklin_encrypt(&ciphertext, message, strlen(message), identity, strlen(identity), publicParameters);
-//    if (CRYPTID_SUCCESS != status)
-//    {
-//        Serial.println("Encrypt failed\n");
-//        plaintext = "fail";
-//    }
-//
-//    status = cryptid_ibe_bonehFranklin_decrypt(&plaintext, ciphertext, privateKey, publicParameters);
-//    if (CRYPTID_SUCCESS != status)
-//    {
-//        Serial.println("Decrypt failed\n");
-//        plaintext = "fail";
-//    }    
+    AffinePointAsBinary privateKey;
+    status_ = cryptid_ibe_bonehFranklin_extract(&privateKey, identity, strlen(identity), masterSecret, publicParameters);
+    if (CRYPTID_SUCCESS != status_)
+    {
+        Serial.println("Extract failed\n");
+        plaintext = "fail";
+    }
+    else Serial.println("\n\n\nExtract success\n");
 
-//    free(plaintext);
-//    bonehFranklinIdentityBasedEncryptionCiphertextAsBinary_destroy(ciphertext);
-//    affineAsBinary_destroy(privateKey);unsigned char *buf
-//    free(masterSecret.masterSecret);
-//    bonehFranklinIdentityBasedEncryptionPublicParametersAsBinary_destroy(publicParameters);
+    BonehFranklinIdentityBasedEncryptionCiphertextAsBinary ciphertext;
+    status_ = cryptid_ibe_bonehFranklin_encrypt(&ciphertext, message, strlen(message), identity, strlen(identity), publicParameters);
+    if (CRYPTID_SUCCESS != status_)
+    {
+        Serial.println("Encrypt failed\n");
+        plaintext = "fail";
+    }
+    else Serial.println("\n\n\nEncrypt success\n");
+
+    status_ = cryptid_ibe_bonehFranklin_decrypt(&plaintext, ciphertext, privateKey, publicParameters);
+    if (CRYPTID_SUCCESS != status_)
+    {
+        Serial.println("Decrypt failed\n");
+        plaintext = "fail";
+    }    
+    else Serial.println("\n\n\nDecrypt success\n");
+
+    free(plaintext);
+    bonehFranklinIdentityBasedEncryptionCiphertextAsBinary_destroy(ciphertext);
+    affineAsBinary_destroy(privateKey);
+    free(masterSecret.masterSecret);
+    bonehFranklinIdentityBasedEncryptionPublicParametersAsBinary_destroy(publicParameters);
 
 }
 

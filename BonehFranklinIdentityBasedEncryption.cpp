@@ -43,7 +43,6 @@ CryptidStatus cryptid_ibe_bonehFranklin_setup(BonehFranklinIdentityBasedEncrypti
     if (status)
     {
         mpz_clear(q);
-        Serial.println("\nStatus\n");
         return status;
     }
 
@@ -57,7 +56,6 @@ CryptidStatus cryptid_ibe_bonehFranklin_setup(BonehFranklinIdentityBasedEncrypti
         mpz_mul_ui(p, r, 12);
         mpz_mul(p, p, q);
         mpz_sub_ui(p, p, 1);
-        Serial.println("\nmpz\n");
     }
     while (!primalityTest_isProbablePrime(p));
 
@@ -81,7 +79,6 @@ CryptidStatus cryptid_ibe_bonehFranklin_setup(BonehFranklinIdentityBasedEncrypti
         {
             mpz_clears(p, q, r, NULL);
             ellipticCurve_destroy(ec);
-            Serial.println("\nStatus random affine \n");
             return status;
         }
 

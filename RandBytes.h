@@ -22,7 +22,7 @@ extern "C" {
  */
 CryptidStatus cryptid_randomBytes(unsigned char *buf, const int num);
 
-extern int __cryptid_cryptoRandom(unsigned char *buf, const int num);
+CryptidStatus __cryptid_cryptoRandom(unsigned char *buf, const int num);
 
 
 #ifdef __cplusplus
